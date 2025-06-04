@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Course</title>
+</head>
+<body>
+  <h2>Add New Course</h2>
+  <form id="courseForm" enctype="multipart/form-data">
+    <label>Course Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Short Description:</label><br>
+    <input type="text" name="short_desc" required><br><br>
+
+    <label>Full Description:</label><br>
+    <textarea name="full_description" rows="5" cols="50" required></textarea><br><br>
+
+    <label>Main Photo:</label><br>
+    <input type="file" name="main_photo" accept="image/*"><br><br>
+
+    <label>Gallery (JSON array of image filenames):</label><br>
+    <input type="text" name="gallery" value='[]'><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="response" style="margin-top: 20px; color: green;"></div>
+
+  <script>
+    document.getElementById("courseForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const res = await fetch('http://localhost:3000/courses', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await res.json();
+      document.getElementById("response").textContent = JSON.stringify(result, null, 2);
+    });
+  </script>
+</body>
+</html>

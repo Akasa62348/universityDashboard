@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Courses</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #f0f0f0; }
+    form { margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <h2>All Courses</h2>
+  <button onclick="loadCourses()">Refresh</button>
+  <table id="courseTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Short Desc</th><th>Main Photo</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Update Course</h2>
+  <form id="updateForm" enctype="multipart/form-data">
+    <label>ID:</label><br>
+    <input type="number" name="id" required><br><br>
+
+    <label>Course Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Short Description:</label><br>
+    <input type="text" name="short_desc" required><br><br>
+
+    <label>Full Description:</label><br>
+    <textarea name="full_description" rows="4" cols="50" required></textarea><br><br>
+
+    <label>Main Photo (optional):</label><br>
+    <input type="file" name="main_photo"><br><br>
+
+    <label>Gallery (JSON array):</label><br>
+    <input type="text" name="gallery" value="[]"><br><br>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <div id="updateResponse" style="color: green; margin-top: 10px;"></div>
+
+  <script>
+    async function loadCourses() {
+      const res = await fetch('http://localhost:3000/courses');
+      const courses = await res.json();
+      const tbody = document.querySelector("#courseTable tbody");
+      tbody.innerHTML = "";
+      courses.forEach(c => {
+        const row = `
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.name}</td>
+            <td>${c.short_desc}</td>
+            <td><img src="http://localhost:3000/uploads/${c.main_photo}" width="60"></td>
+            <td>
+              <button onclick="fillForm(${c.id})">Edit</button>
+              <button onclick="deleteCourse(${c.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    async function fillForm(id) {
+      const res = await fetch(`http://localhost:3000/courses/${id}`);
+      const c = await res.json();
+      const form = document.getElementById("updateForm");
+      form.id.value = c.id;
+      form.name.value = c.name;
+      form.short_desc.value = c.short_desc;
+      form.full_description.value = c.full_description;
+      form.gallery.value = c.gallery;
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    async function deleteCourse(id) {
+      if (!confirm("Are you sure you want to delete this course?")) return;
+      const res = await fetch(`http://localhost:3000/courses/${id}`, { method: 'DELETE' });
+      const msg = await res.json();
+      alert(msg.message);
+      loadCourses();
+    }
+
+    document.getElementById("updateForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const id = form.id.value;
+      const formData = new FormData(form);
+
+      const res = await fetch(`http://localhost:3000/courses/${id}`, {
+        method: 'PUT',
+        body: formData
+      });
+
+      const result = await res.json();
+      document.getElementById("updateResponse").textContent = JSON.stringify(result);
+      loadCourses();
+    });
+
+    loadCourses();
+  </script>
+</body>
+</html>
