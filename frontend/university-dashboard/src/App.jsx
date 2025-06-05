@@ -7,6 +7,7 @@ import NewsEvents from './components/pages/NewsEvents';
 import Gallery from './components/pages/Gallery';
 import UpcomingEvents from './components/pages/UpcomingEvents';
 import Login from './components/pages/Login';
+import Signup from "./components/pages/Signup";
 
 export default function App() {
   return (
@@ -22,6 +23,10 @@ export default function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/upcoming-events" element={<UpcomingEvents />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
+
+          
         </Routes>
       </div>
     </div>
