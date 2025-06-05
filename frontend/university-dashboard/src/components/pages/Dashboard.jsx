@@ -10,9 +10,10 @@ export default function Dashboard() {
         <nav className="nav">
           <a href="#">Home</a>
           <a href="#">Courses</a>
-          <a href="#">Events</a>
+          <a href="#">Upcoming Events</a>
           <a href="#">Gallery</a>
-          <a href="#">News</a>
+          <a href="#">News & Events</a>
+          <a href="#">Blog</a>
         </nav>
       </aside>
 
