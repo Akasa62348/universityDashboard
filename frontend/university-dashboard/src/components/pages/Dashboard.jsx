@@ -1,7 +1,17 @@
 import React from "react";
-import "./Dashboard.css"; // Make sure this CSS file is in the same folder
+import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Optionally clear user info from localStorage/session here
+    // localStorage.removeItem("user");
+
+    navigate("/login");
+  };
+
   return (
     <div className="dashboard">
       {/* Sidebar */}
@@ -22,7 +32,12 @@ export default function Dashboard() {
         {/* Header */}
         <header className="header">
           <div className="header-title">Dashboard</div>
-          <div className="header-user">User</div>
+          <div className="header-user">
+            User
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         </header>
 
         {/* Content */}
