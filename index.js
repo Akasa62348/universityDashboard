@@ -9,9 +9,11 @@ const port = 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173' , 'https://universitydashboardpatna.netlify.app/'] // <-- your React app's dev server
+  origin: ['http://localhost:5173' , 'https://68415904f4e6735fce667fbb--universitydashboardpatna.netlify.app/'] // <-- your React app's dev server
   credentials: true
 }));
+
+// https://68415904f4e6735fce667fbb--universitydashboardpatna.netlify.app/
 
 app.use(bodyParser.json());
 
