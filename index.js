@@ -9,7 +9,7 @@ const port = 3000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // <-- your React app's dev server
+  origin: ['http://localhost:5173' , 'https://universitydashboardpatna.netlify.app/'] // <-- your React app's dev server
   credentials: true
 }));
 
