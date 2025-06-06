@@ -1,8 +1,8 @@
-// src/components/Blog.jsx
+// Blog.jsx (Improved UI)
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import "./Blog.css"; // Optional styling
+import "./Blog.css";
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
@@ -22,23 +22,30 @@ export default function Blog() {
   };
 
   return (
-    <div className="blog-list">
-      <h2>All Blogs</h2>
-      <Link to="/blogs/add" className="add-blog">➕ Add Blog</Link>
-      {blogs.length === 0 ? (
-        <p>No blogs available.</p>
-      ) : (
-        blogs.map(blog => (
-          <div key={blog.id} className="blog-card">
-            <h3>{blog.title}</h3>
-            <p>{blog.short_description}</p>
-            <div className="blog-actions">
-              <Link to={`/blogs/${blog.id}/edit`} className="edit-btn">✏️ Edit</Link>
-              <button onClick={() => handleDelete(blog.id)} className="delete-btn">🗑️ Delete</button>
+    <div className="blog-page">
+      <div className="blog-header">
+        <h2>Blog Posts</h2>
+        <Link to="/blogs/add" className="add-blog">➕ Add Blog</Link>
+      </div>
+      <div className="blog-grid">
+        {blogs.length === 0 ? (
+          <p>No blogs available.</p>
+        ) : (
+          blogs.map(blog => (
+            <div key={blog.id} className="blog-card">
+              <div className="blog-thumb" />
+              <div className="blog-content">
+                <h3>{blog.title}</h3>
+                <p>{blog.short_description}</p>
+                <div className="blog-actions">
+                  <Link to={`/blogs/${blog.id}/edit`} className="edit-btn">✏️</Link>
+                  <button onClick={() => handleDelete(blog.id)} className="delete-btn">🗑️</button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }

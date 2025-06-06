@@ -1,51 +1,90 @@
-// controllers/blogController.js
-const db = require("../db");
+const db = require('../db');
+const path = require('path');
+const fs = require('fs');
 
-exports.getAllBlogs = (req, res) => {
-  db.query("SELECT * FROM blogs", (err, results) => {
-    if (err) return res.status(500).json({ error: "Failed to fetch blogs" });
-    res.json(results);
+// CREATE BLOG
+exports.createBlog = (req, res) => {
+  const { title, short_description, content, category } = req.body;
+  const thumbnail = req.file ? req.file.filename : null;
+
+  const query = `
+    INSERT INTO blogs (title, short_description, content, category, thumbnail)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [title, short_description, content, category, thumbnail], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    res.status(201).json({ message: 'Blog created', id: result.insertId });
   });
 };
 
+// UPDATE BLOG
+exports.updateBlog = (req, res) => {
+  const { title, short_description, content, category } = req.body;
+  const id = req.params.id;
+
+  let query = `UPDATE blogs SET title = ?, short_description = ?, content = ?, category = ?`;
+  const params = [title, short_description, content, category];
+
+  if (req.file) {
+    query += `, thumbnail = ?`;
+    params.push(req.file.filename);
+  }
+
+  query += ` WHERE id = ?`;
+  params.push(id);
+
+  db.query(query, params, (err) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: 'Blog updated' });
+  });
+};
+
+// GET BLOG BY ID
 exports.getBlogById = (req, res) => {
   const { id } = req.params;
-  db.query("SELECT * FROM blogs WHERE id = ?", [id], (err, results) => {
-    if (err) return res.status(500).json({ error: "Error fetching blog" });
-    if (results.length === 0) return res.status(404).json({ error: "Blog not found" });
-    res.json(results[0]);
+  db.query('SELECT * FROM blogs WHERE id = ?', [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    if (result.length === 0) return res.status(404).json({ error: 'Not found' });
+
+    const blog = result[0];
+    blog.thumbnail_url = blog.thumbnail ? `http://localhost:3000/uploads/${blog.thumbnail}` : null;
+    res.json(blog);
   });
 };
 
-exports.createBlog = (req, res) => {
-  const { title, short_description, content } = req.body;
-  db.query(
-    "INSERT INTO blogs (title, short_description, content) VALUES (?, ?, ?)",
-    [title, short_description, content],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: "Error adding blog" });
-      res.json({ id: result.insertId, title, short_description, content });
-    }
-  );
+// GET ALL BLOGS (needed for frontend list)
+exports.getAllBlogs = (req, res) => {
+  db.query('SELECT * FROM blogs ORDER BY id DESC', (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    const blogs = results.map(blog => ({
+      ...blog,
+      thumbnail_url: blog.thumbnail ? `http://localhost:3000/uploads/${blog.thumbnail}` : null,
+    }));
+    res.json(blogs);
+  });
 };
 
-exports.updateBlog = (req, res) => {
-  const { id } = req.params;
-  const { title, short_description, content } = req.body;
-  db.query(
-    "UPDATE blogs SET title = ?, short_description = ?, content = ? WHERE id = ?",
-    [title, short_description, content, id],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: "Error updating blog" });
-      res.json({ id, title, short_description, content });
-    }
-  );
-};
-
+// DELETE BLOG
 exports.deleteBlog = (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM blogs WHERE id = ?", [id], (err, result) => {
-    if (err) return res.status(500).json({ error: "Error deleting blog" });
-    res.json({ message: "Blog deleted successfully" });
+
+  // First, delete the thumbnail if it exists
+  db.query('SELECT thumbnail FROM blogs WHERE id = ?', [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    if (result.length === 0) return res.status(404).json({ error: 'Not found' });
+
+    const thumbnail = result[0].thumbnail;
+    if (thumbnail) {
+      const filepath = path.join(__dirname, '../uploads', thumbnail);
+      fs.unlink(filepath, (err) => {
+        if (err) console.error("Failed to delete thumbnail:", err);
+      });
+    }
+
+    db.query('DELETE FROM blogs WHERE id = ?', [id], (err) => {
+      if (err) return res.status(500).json({ error: err });
+      res.json({ message: 'Blog deleted' });
+    });
   });
 };

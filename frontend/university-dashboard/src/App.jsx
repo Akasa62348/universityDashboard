@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/pages/Dashboard';
 import Courses from './components/pages/Courses';
@@ -16,9 +16,24 @@ import AddBlog from "./components/AddBlog";
 import EditBlog from "./components/EditBlog";
 
 export default function App() {
+  const location = useLocation();
+
+  // Hide sidebar on these base routes and their subroutes
+  const hideSidebarPrefixes = [
+    '/login',
+    '/signup',
+    '/blog',
+    '/blogs',
+    '/courses',
+  ];
+
+  const shouldHideSidebar = hideSidebarPrefixes.some(prefix =>
+    location.pathname === prefix || location.pathname.startsWith(prefix + '/')
+  );
+
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      {!shouldHideSidebar && <Sidebar />}
       <div className="flex-1 p-6 overflow-auto bg-gray-50">
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
@@ -33,10 +48,9 @@ export default function App() {
           <Route path="/upcoming-events" element={<UpcomingEvents />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-           <Route path="/blog" element={<Blog />} />
-            <Route path="/blogs/add" element={<AddBlog />} />
-           <Route path="/blogs/:id/edit" element={<EditBlog />} />
-          
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs/add" element={<AddBlog />} />
+          <Route path="/blogs/:id/edit" element={<EditBlog />} />
         </Routes>
       </div>
     </div>
