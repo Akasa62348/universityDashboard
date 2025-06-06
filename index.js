@@ -9,13 +9,25 @@ const port = 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173' , 'https://68415904f4e6735fce667fbb--universitydashboardpatna.netlify.app/'] // <-- your React app's dev server
+  origin: [
+    'http://localhost:5173',
+    'https://68415904f4e6735fce667fbb--universitydashboardpatna.netlify.app',
+    'https://universitydashboardpatna.netlify.app'
+  ],
   credentials: true
 }));
 
-// https://68415904f4e6735fce667fbb--universitydashboardpatna.netlify.app/
 
 app.use(bodyParser.json());
+
+const courseRoutes = require('./routes/courseRoutes');
+const blogRoutes = require("./routes/blogRoutes");
+app.use("/blogs", blogRoutes);
+app.use('/courses', courseRoutes);
+
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
 
 // DB Connection
 const db = mysql.createConnection({

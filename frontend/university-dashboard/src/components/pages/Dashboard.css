@@ -46,6 +46,64 @@ body, html {
   padding-left: 10px;
 }
 
+/* Courses Dropdown */
+.dropdown-content {
+  background-color: #34495e;
+  padding: 10px;
+  border-radius: 5px;
+   max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  padding: 6px 0;
+  border-bottom: 1px solid #3d566e;
+   max-width: 100%;
+  overflow: hidden;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.course-name {
+  flex-grow: 1;
+  padding-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.course-actions {
+  display: flex;
+   flex-shrink: 0;
+  gap: 6px;
+}
+
+.edit-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 4px;
+  transition: color 0.2s;
+}
+
+.edit-btn:hover {
+  color: #f1c40f;
+}
+
+.delete-btn:hover {
+  color: #e74c3c;
+}
+
 /* Main area */
 .main {
   margin-left: 220px;
@@ -89,4 +147,3 @@ body, html {
 .logout-button:hover {
   background-color: #c62828;
 }
-

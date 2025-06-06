@@ -1,0 +1,36 @@
+.add-course-container {
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 8px;
+}
+
+.course-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.course-form input[type="text"],
+.course-form input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.course-form .ql-container {
+  height: 200px;
+  margin-top: 10px;
+}
+
+.course-form button {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
